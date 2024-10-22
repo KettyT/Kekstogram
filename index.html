@@ -5,7 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/style.css">
+
+<!--  <link rel="stylesheet" href="nouislider/kekstagram-nouislider/keks_nouislider/nouislider/nouislider.css">-->
+<!--  <link rel="stylesheet" href="nouislider/kekstagram-nouislider/keks_nouislider/css/style.css">-->
+
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="css/noslider/nouislider.css?v=1">
+<!--  <link rel="stylesheet" href="css/noslider/style.css">-->
   <title>Кекстаграм</title>
 </head>
 
@@ -56,7 +62,7 @@
                   </div>
 
                   <!-- Изменение глубины эффекта, накладываемого на изображение -->
-                  <fieldset class="img-upload__effect-level  effect-level">
+                  <fieldset class="img-upload__effect-level  effect-level hidden">
                     <input class="effect-level__value" type="number" name="effect-level" value="">
                     <div class="effect-level__slider"></div>
                   </fieldset>
@@ -152,14 +158,14 @@
           <!-- Комментарии к изображению -->
           <div class="social__comment-count">5 из <span class="comments-count">125</span> комментариев</div>
           <ul class="social__comments">
-            <li class="social__comment">
+            <!--<li class="social__comment">
               <img class="social__picture" src="img/avatar-4.svg" alt="Аватар комментатора фотографии" width="35" height="35">
               <p class="social__text">Мега фото! Просто обалдеть. Как вам так удалось?</p>
             </li>
             <li class="social__comment">
               <img class="social__picture" src="img/avatar-3.svg" alt="Аватар комментатора фотографии" width="35" height="35">
                <p class="social__text">Да это фоташоп!!!!!!!!</p>
-            </li>
+            </li>-->
           </ul>
 
           <!-- Кнопка для загрузки новой порции комментариев -->
@@ -242,6 +248,8 @@
   </template>
 
  <script   type="module" src="js/main.js"></script>
+  <script   type="module" src="nouislider/kekstagram-nouislider/keks_nouislider/nouislider/nouislider.js"></script>
+<script type="text/javascript" src="js/nouislider.js"></script>
 
 </body>
 </html>

@@ -549,6 +549,19 @@ main {
           transform: translateX(-50%);
 }
 
+.effect-level .noUi-target {
+  border-radius: 16px;
+
+}
+
+.effect-level .noUi-connects {
+  border-radius: 13px;
+}
+
+.effect-level .noUi-connect {
+  background: #ffe753;
+}
+
 .effect-level__value {
   display: none;
 }

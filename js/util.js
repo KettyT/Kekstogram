@@ -2,7 +2,6 @@
 
 const myAwesomeSet = new Set();
 
-
 const getUniqueRandomInt = function (min, max) {
   if (min < 0 || max < 0) {
     return -1;
@@ -34,7 +33,7 @@ const getUniqueRandomInt = function (min, max) {
 
 const getRandomInt = function (min, max) {
   if (min < 0 || max < 0) {
-    return -1;
+    throw new Error("Не верные параметры для случайного числа")
   }
 
   if (max < min) {
@@ -55,3 +54,43 @@ const getRandomElementArr = (array) => {
 }
 
 export { getRandomInt, stringCount, getRandomElementArr, getUniqueRandomInt};
+
+// закрытие большой картинки
+
+document.addEventListener('keydown', (evt)=> {
+  if (evt.keyCode === 27) {
+    // picture-cancel
+    const bigPicture = document.querySelector('.big-picture');
+
+    if (!bigPicture.classList.contains('hidden')) {
+      bigPicture.classList.add('hidden');
+      document.body.classList.remove("modal-open");
+      return;
+    }
+    const imgUploadOverlay = document.querySelector('.img-upload__overlay');
+    if (!imgUploadOverlay.classList.contains('hidden')) {
+      imgUploadOverlay.classList.add('hidden');
+      document.body.classList.remove("modal-open");// разрешение прокрутки
+    }
+
+  }
+
+})
+
+const cross = document.querySelector('.big-picture__cancel');
+cross.addEventListener('click', function() {
+  const bigPicture = document.querySelector('.big-picture');
+
+  bigPicture.classList.add('hidden');
+  document.body.classList.remove("modal-open");
+
+})
+
+const uploadCross = document.querySelector('.img-upload__cancel.cancel');
+uploadCross.addEventListener('click', function() {
+  const imgUploadOverlay = document.querySelector('.img-upload__overlay');
+
+  imgUploadOverlay.classList.add('hidden');
+  document.body.classList.remove("modal-open");// разрешение прокрутки
+
+})

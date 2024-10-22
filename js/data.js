@@ -1,6 +1,5 @@
 import {getRandomInt, getRandomElementArr, getUniqueRandomInt} from './util.js';
 
-
 const PHOTO_COUNT = 25;
 
 const Likes = {
@@ -61,13 +60,14 @@ const addComments = () => {
 
   return comments;
 };
+// заполнение массива photos
 
 const addPhotos = () => {
   for (let i = 0; i < PHOTO_COUNT; i++) {
     photos.push ({
       id: i,
       url: 'photos/' + (i + 1) + '.jpg',
-      description: getRandomInt(descriptionPhoto),
+      description: descriptionPhoto[getRandomInt(0, descriptionPhoto.length - 1)],
       likes: getUniqueRandomInt(Likes.MIN, Likes.MAX),
       comments: addComments(),
     })

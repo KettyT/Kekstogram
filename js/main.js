@@ -8,3 +8,8 @@ window.photos = photos;
 previewFn(photos);
 
 
+/*document.addEventListener("DOMContentLoaded", function () {
+
+})*/
+
+
