@@ -59,7 +59,6 @@ export { getRandomInt, stringCount, getRandomElementArr, getUniqueRandomInt};
 
 document.addEventListener('keydown', (evt)=> {
   if (evt.keyCode === 27) {
-    // picture-cancel
     const bigPicture = document.querySelector('.big-picture');
 
     if (!bigPicture.classList.contains('hidden')) {
@@ -67,14 +66,22 @@ document.addEventListener('keydown', (evt)=> {
       document.body.classList.remove("modal-open");
       return;
     }
+
+    // если фокус в поле ввода комментария, нажатие Esc не должно приводить к закрытию формы ред. изображения
+    const inputCommentsUploadForm = document.querySelector('.text__description');
+    const inputHashtag = document.querySelector('.text__hashtags');
+
+    if (evt.target ===  inputCommentsUploadForm || evt.target === inputHashtag) {
+      return;
+    }
+
+
     const imgUploadOverlay = document.querySelector('.img-upload__overlay');
     if (!imgUploadOverlay.classList.contains('hidden')) {
       imgUploadOverlay.classList.add('hidden');
       document.body.classList.remove("modal-open");// разрешение прокрутки
     }
-
   }
-
 })
 
 const cross = document.querySelector('.big-picture__cancel');

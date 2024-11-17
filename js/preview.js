@@ -1,5 +1,3 @@
-
-
 const previewFn =function (photos) {
 
 
@@ -9,9 +7,6 @@ const previewFn =function (photos) {
   for (let i = 0; i < photos.length; i++) {
 
     let templateClone = photoTemplate.cloneNode(true);
-
-
-    // templateClone.setAttribute("href", photos[i].url);
     templateClone.setAttribute("data-id", photos[i].id); //для открытия полной версии
     const minipicture = templateClone.querySelector('img');
     minipicture.src = photos[i].url;

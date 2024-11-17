@@ -55,9 +55,7 @@ const addComments = () => {
       message: getRandomElementArr(messages),
       name: getRandomElementArr(names),
     });
-
   }
-
   return comments;
 };
 // заполнение массива photos
@@ -67,6 +65,7 @@ const addPhotos = () => {
     photos.push ({
       id: i,
       url: 'photos/' + (i + 1) + '.jpg',
+      avatar: 'img/avatar-' + getRandomInt(1, 6) +  '.svg',
       description: descriptionPhoto[getRandomInt(0, descriptionPhoto.length - 1)],
       likes: getUniqueRandomInt(Likes.MIN, Likes.MAX),
       comments: addComments(),

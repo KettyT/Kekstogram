@@ -674,12 +674,19 @@ main {
  */
 
 .text {
-  margin: 0;
+/*  margin: 0;
   padding: 0;
   margin-bottom: 30px;
 
   text-align: center;
+  border: none;*/
+
+  margin: 0;
+  padding: 0;
+  margin-bottom: 10px;
+  text-align: center;
   border: none;
+  /*padding-bottom: 20px;*/
 }
 
 .text__hashtags {
@@ -1413,6 +1420,24 @@ main {
   overflow: hidden;
 }
 
+.error_text_style {
+  position: relative;
+  bottom: 1px;
+  display: block;
+  margin: 0 auto;
+  color: #ff073a;
+  max-height: 20px;
+}
+
 .hidden {
   display: none;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.input_error_border {
+  outline: 3px solid #f80000;
+
 }
