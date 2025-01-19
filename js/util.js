@@ -1,15 +1,15 @@
 //случайное число
-
 const myAwesomeSet = new Set();
 
-const getUniqueRandomInt = function (min, max) {
+const getUniqueRandomInt = function (min, max, customSet) {
   if (min < 0 || max < 0) {
     return -1;
   }
 
+  const uniqueSet = (!customSet) ? myAwesomeSet : customSet;
   if (max < min) {
     [min, max] = [max, min]
-  };
+  }
 
   let genNext = true;
   let counter = 0;
@@ -17,15 +17,13 @@ const getUniqueRandomInt = function (min, max) {
   while (genNext) {
     const number = Math.floor(Math.random()* (max-min+1)) + min;
 
-    if (!myAwesomeSet.has(number)) {
-      myAwesomeSet.add(number);
+    if (!uniqueSet.has(number)) {
+      uniqueSet.add(number);
       return number;
     }
 
     counter++;
-
     if (counter > 100) {
-      console.log(myAwesomeSet);
       throw new Error("Числа закончились в промежутке " + min + ' ' + max + ' ');
     }
   }
@@ -75,7 +73,6 @@ document.addEventListener('keydown', (evt)=> {
       return;
     }
 
-
     const imgUploadOverlay = document.querySelector('.img-upload__overlay');
     if (!imgUploadOverlay.classList.contains('hidden')) {
       imgUploadOverlay.classList.add('hidden');
@@ -90,14 +87,27 @@ cross.addEventListener('click', function() {
 
   bigPicture.classList.add('hidden');
   document.body.classList.remove("modal-open");
-
 })
 
 const uploadCross = document.querySelector('.img-upload__cancel.cancel');
 uploadCross.addEventListener('click', function() {
+  closeImageUploadForm();
+});
+
+const closeImageUploadForm = function () {
   const imgUploadOverlay = document.querySelector('.img-upload__overlay');
 
   imgUploadOverlay.classList.add('hidden');
   document.body.classList.remove("modal-open");// разрешение прокрутки
+};
 
+const closeSuccessButton = document.querySelector('.onload-status');
+closeSuccessButton.addEventListener('click', function(evt) {
+  if (evt.target.classList.contains("success__button")) {
+    closeSuccessButton.classList.add('hidden');
+  }
 })
+
+export {closeImageUploadForm};
+
+

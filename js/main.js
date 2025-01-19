@@ -1,15 +1,24 @@
-import { photos } from "./data.js";
+import { getRandomInt } from "./data.js";
 import {previewFn} from "./preview.js";
 import "./FullPhoto.js";
-
-console.log(photos);
-window.photos = photos;
-
-previewFn(photos);
+import {getPhotoFromServer} from "./fetchPhoto.js";
+import {makeFilter} from './filter.js';
 
 
-/*document.addEventListener("DOMContentLoaded", function () {
 
-})*/
+getPhotoFromServer()
+  .then((photos) => {
+    // Добавить аватары (генерируем)
+    photos.forEach((photo) => {
+      photo.avatar = 'img/avatar-' + getRandomInt(1, 6) +  '.svg';
+    });
+
+    console.log(photos);
+    window.photos = photos;
+    previewFn(photos);
+    makeFilter(photos);
+  });
+
+
 
 

@@ -1,5 +1,13 @@
-const previewFn =function (photos) {
 
+const clearSpace = function () {
+  const containerLinkList = document.querySelectorAll(".pictures a");
+
+  for (let i = 0; i < containerLinkList.length; i++) {
+    containerLinkList[i].remove();
+  }
+};
+
+const previewFn =function (photos) {
 
   const photoTemplate = document.getElementById("picture").content.querySelector("a");
   const container = document.querySelector(".pictures");
@@ -22,6 +30,6 @@ const previewFn =function (photos) {
   }
 };
 
-export {previewFn }
+export {previewFn, clearSpace }
 
 

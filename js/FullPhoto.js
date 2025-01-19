@@ -1,6 +1,9 @@
-// import {photos} from "./data";
-import {validateForm} from "./validation.js"
 
+import {validateForm} from "./validation.js"
+import {sendPhotoToServer} from './fetchPhoto.js'
+import {closeImageUploadForm} from "./util.js"
+
+const VISIBLE_COUNT_COMMENT = 5;
 const acceptedTypes = ["image/jpeg", "image/png"];
 
 function chooseStyleByFilterEffect(effectName, manifestation) {
@@ -23,6 +26,21 @@ function chooseStyleByFilterEffect(effectName, manifestation) {
   }
 }
 
+const addComments = (from, to, photo, commentTemplate, socialCommentsDomElm, socialCommentCountDomElm) => {
+  for (let i = from; i < to; i++) {
+    const comment = photo.comments[i];
+    commentTemplate.querySelector(".social__text").textContent = comment.message;
+    const imgComment = commentTemplate.querySelector("img");
+    imgComment.src = comment.avatar;
+    imgComment.alt = comment.name;
+
+    let commentElm = commentTemplate.cloneNode(true);
+
+    socialCommentsDomElm.appendChild(commentElm);
+  }
+  socialCommentCountDomElm.innerHTML = to + " из <span class=\"comments-count\">" + photo.comments.length + "</span> комментариев"; // можно заменить на appendChild
+};
+
 document.addEventListener("DOMContentLoaded", function () {
   const START_RANGE = 0.5;
   let currentEffectForUpload = "none";
@@ -33,6 +51,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const section = document.querySelector('.pictures.container');
   const formImgUpload = document.querySelector('.img-upload__wrapper');
   const submitButton = document.querySelector('#upload-submit');
+  const loadStatus = document.querySelector(".onload-status");
+  let currentVisibleCommentsCount;
+  let currentPhoto;
+  const commentTemplate = document.querySelector("#full_img").content;
+  const socialComments = document.querySelector('.social__comments');
+  const bigPicture = document.querySelector('.big-picture');
 
 // клик по случайной мини-фото
   section.addEventListener('click', function(evt) {
@@ -51,12 +75,13 @@ document.addEventListener("DOMContentLoaded", function () {
     for (let i = 0; i < photos.length; i++) {
       if (photos[i].id === id) {
         photo = photos[i];
+        currentPhoto = photo;
         break;
       }
     }
 
-//показ большой картинки
-    const bigPicture = document.querySelector('.big-picture');
+//показ большой фотографии
+
     bigPicture.classList.remove('hidden');
     const img = bigPicture.querySelector(".big-picture__img img");
     const description = bigPicture.querySelector('.social__caption');
@@ -64,32 +89,40 @@ document.addEventListener("DOMContentLoaded", function () {
     const socialCommentCount = bigPicture.querySelector('.social__comment-count');
     const socialAvatar = bigPicture.querySelector('.social__picture');
 
-
     img.src = photo.url;
     img.alt = photo.description;
     socialAvatar.src = photo.avatar;
     description.textContent = photo.description;
     likes.textContent = photo.likes;
 
-    const socialComments = document.querySelector('.social__comments');
     socialComments.textContent = "";
 
-    const commentTemplate = document.querySelector("#full_img").content;
-    socialCommentCount.innerHTML = photo.comments.length + " из <span class=\"comments-count\">" + photo.comments.length + "</span> комментариев"; // можно заменить на appendChild
-    for (let i = 0; i < photo.comments.length; i++) {
-      const comment = photo.comments[i];
-      commentTemplate.querySelector(".social__text").textContent = comment.message;
-      const imgComment = commentTemplate.querySelector("img");
-      imgComment.src = comment.avatar;
-      imgComment.alt = comment.name;
+    currentVisibleCommentsCount = Math.min(VISIBLE_COUNT_COMMENT, photo.comments.length);
 
-      let commentElm = commentTemplate.cloneNode(true);
-
-      socialComments.appendChild(commentElm);
+    addComments(0, currentVisibleCommentsCount, photo, commentTemplate, socialComments, socialCommentCount);
+    if (currentVisibleCommentsCount < currentPhoto.comments.length) {
+      buttonUploadMore.classList.remove('hidden');
     }
 
     document.body.classList.add("modal-open");
   });
+
+  const  buttonUploadMore = document.querySelector('.comments-loader');
+
+  buttonUploadMore.addEventListener('click', evt => {
+
+    let from = currentVisibleCommentsCount;
+    currentVisibleCommentsCount = Math.min(currentVisibleCommentsCount + VISIBLE_COUNT_COMMENT, currentPhoto.comments.length);
+    let to = currentVisibleCommentsCount;
+
+    const socialCommentCount = bigPicture.querySelector('.social__comment-count');
+
+    addComments(from, to, currentPhoto, commentTemplate, socialComments, socialCommentCount);
+
+    if (!(currentVisibleCommentsCount < currentPhoto.comments.length)) {
+      buttonUploadMore.classList.add('hidden');
+    }
+  })
 
   //загрузка фото
 
@@ -109,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const imgUploadOverlay = document.querySelector('.img-upload__overlay');
     imgUploadOverlay.classList.remove("hidden");
 
-    var reader = new FileReader();
+    const reader = new FileReader();
     reader.readAsDataURL(file);
 
     reader.onload = function(event) {
@@ -119,8 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     selectedFile = file;
 
-
-    // Навешиваем slider.
+    // Навешиваем slider
     const effectLevelSlider = formImgUpload.querySelector('.effect-level__slider');
     noUiSlider.create(effectLevelSlider, {
       range: {
@@ -141,21 +173,14 @@ document.addEventListener("DOMContentLoaded", function () {
       const input = li.querySelector('input');
       const effect = input.id;
       const filterEffect = chooseStyleByFilterEffect(effect, effectLevelSlider.noUiSlider.get());
-      // imgUploadPreview.setAttribute("style", style);
+
       imgUploadPreview.style.filter = filterEffect;
     });
   }, false);
-  /*noUiSlider.create(slider, {
-      start: [20, 80],
-      connect: true,
-      range: {
-        'min': 0,
-        'max': 100
-      }
-    });*/
 
   //выбор эффекта
   const effectsList = document.querySelector(".effects__list");
+
   effectsList.addEventListener('click', (evt) => {
     currentEffect = evt.target.closest('li');
     const li = currentEffect;
@@ -174,10 +199,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }  else {
       rang.classList.remove('hidden');
     }
-
   });
 
-   const buttonScaleSmaller= document.querySelector('.scale__control--smaller');
+  const buttonScaleSmaller= document.querySelector('.scale__control--smaller');
   const buttonScaleBigger= document.querySelector('.scale__control--bigger');
   const scaleControlValue = document.querySelector('.scale__control--value');
 
@@ -190,7 +214,6 @@ document.addEventListener("DOMContentLoaded", function () {
     scaleControlValue.value = currentScale + '%';
 
     imgUploadPreview.style.transform = 'scale(' + currentScale + '%)';
-
   });
 
   buttonScaleBigger.addEventListener('click', (evt) => {
@@ -202,7 +225,6 @@ document.addEventListener("DOMContentLoaded", function () {
     scaleControlValue.value = currentScale + '%';
 
     imgUploadPreview.style.transform = 'scale(' + currentScale + '%)';
-
   });
 
   submitButton.addEventListener('click', (evt) => {
@@ -214,14 +236,37 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!validationResult) {
       return;
     }
+    closeImageUploadForm();
 
+    const template = document.querySelector('#messages').content;
+    const messageForm = template.cloneNode(true);
+    const messageContent = loadStatus.querySelector(".message-content");
+    messageContent.innerHTML = "";
+    messageContent.appendChild(messageForm);
+    loadStatus.classList.remove("hidden");
+    document.body.classList.add("modal-open");
 
+    sendPhotoToServer({
+      selectedFile: selectedFile,
+      currentScale: currentScale,
+      currentEffectForUpload: currentEffectForUpload
+    }).then((result) => {
+      // Успех
+      const template = document.querySelector('#success').content;
+      const messageForm = template.cloneNode(true);
+
+      const messageContent = loadStatus.querySelector(".message-content");
+      messageContent.innerHTML = "";
+
+      messageContent.appendChild(messageForm);
+
+      loadStatus.classList.remove("hidden");
+      document.body.classList.add("modal-open");
+
+    }, (data) => {
+      loadStatus.classList.remove("hidden");
+    });
   })
-
-
-
-
-
 });
 
 

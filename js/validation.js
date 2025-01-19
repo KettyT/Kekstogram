@@ -1,13 +1,8 @@
 const MAX_HASHTAGS = 5;
 const MAX_SYMBOLS_HASHTAGS = 20;
 
-const submitButton = document.querySelector('#upload-submit');
-const uploadPhotoForm = document.querySelector('#upload-select-image'); // загрузка фото
 const inputHashtag = document.querySelector('.text__hashtags');
-const inputCommentsUploadForm = document.querySelector('.text__description');
 const uploadFormErrorMessage = document.querySelector('.upload_form_error_message');
-
-// const allowHashTagSet = new Set(["a", "b", "c"]);
 
 let validateionResult = false;
 
@@ -24,20 +19,22 @@ function setHashtagOk() {
 
 // поля хэш-тегов заполнены с ошибками
 function setHashtagError(errorMessage) {
-  // inputHashtag.setCustomValidity(errorMessage.message);
   inputHashtag.classList.add('input_error_border');
   uploadFormErrorMessage.textContent = errorMessage.message;
   uploadFormErrorMessage.classList.remove('invisible')
 }
 
 let validateHashtags = function (inputText) {
-  const inputArray = inputText.split(' ');// разделение строки на массив строк с заданным разделителем
+
+  // число строк с хэш-тегом не больше 5
+  const inputArray = inputText.split(' ');// split разделение строки на массив строк с заданным разделителем
   if(inputArray.length > MAX_HASHTAGS) {
     return {
       message: 'Максимум 5 хэш-тегов'
     }
   }
-
+// строка после решётки должна состоять из букв и чисел и не может содержать пробелы, спецсимволы (#, @, $ и т. п.),
+// символы пунктуации (тире, дефис, запятая и т. п.), эмодзи и т. д.;
   for (let i = 0; i < inputArray.length; i++) {
     // for (let j = 0; j < inputArray[i].length; j++) {
     //   const character = inputArray[i][j];
@@ -59,7 +56,7 @@ let validateHashtags = function (inputText) {
       }
     }
   }
-
+// есть ли хэш-тег на первом месте
   const isStartNotHashtag = inputArray.some((item) => {
     return item[0] !== '#';
   })
@@ -68,7 +65,7 @@ let validateHashtags = function (inputText) {
       message: 'Хэш-тег начинается с символа #'
     }
   }
-
+//макс длина хэш-тега 20 символов
   const isLongHashtag = inputArray.some((item) => {
     return item.length > MAX_SYMBOLS_HASHTAGS
   });
@@ -77,14 +74,14 @@ let validateHashtags = function (inputText) {
       message: 'Максимальная длина одного хэш-тега 20 символов, включая решётку'
     }
   }
-
+//хэш-теги разделяются пробелами
   const isSplitSpaceHashtag = inputArray.some((item) => {
     return item.indexOf('#', 1) >= 1;
   });
   if (isSplitSpaceHashtag) {
     inputHashtag.setCustomValidity('Хэш-теги разделяются пробелами');
   }
-
+//хэш-теги не повторяются
   const isRepeatingHashtag = inputArray.some((item, i, arr) => {
     return arr.indexOf(item, i + 1) >= i + 1;
   });
@@ -92,13 +89,13 @@ let validateHashtags = function (inputText) {
     inputHashtag.setCustomValidity('Хэш-теги не должны повторяться');
   }
 };
-
+// перевод хэш-тега в нижний регистр
 inputHashtag.addEventListener('input', () => {
   const inputText = inputHashtag.value.toLowerCase().trim();
   if (!inputText) {
     return
   }
-
+/*-----------------------------------------------*/
   let errorMessage = validateHashtags(inputText);
   if (!errorMessage) {
     setHashtagOk();

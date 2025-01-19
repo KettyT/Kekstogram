@@ -75,4 +75,5 @@ const addPhotos = () => {
 };
 addPhotos();
 
-export { photos };
+export { photos, getRandomInt };
+
